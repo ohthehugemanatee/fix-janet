@@ -3,6 +3,8 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"io/ioutil"
+	"log"
 	"os"
 	"strings"
 
@@ -10,7 +12,15 @@ import (
 )
 
 func main() {
-
+	targetFile := os.Args[1]
+	file, err := os.Open(targetFile)
+	if err != nil {
+		log.Fatalf("Failed opening target file. Error: %v", err)
+	}
+	fileContents, _ := ioutil.ReadAll(file)
+	fileContentsString := string(fileContents)
+	cleanedHTML := removeScriptFromHTML(fileContentsString)
+	writeStringToFile(targetFile, cleanedHTML)
 }
 
 func removeScriptFromHTML(s string) string {
