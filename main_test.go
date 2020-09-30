@@ -15,6 +15,9 @@ func TestFindScript(t *testing.T) {
 	dirtyHTMLString := string(dirtyHTML)
 	cleanHTML := removeScriptFromHTML(dirtyHTMLString)
 	if strings.Contains(cleanHTML, "coinhive") {
-		t.Error("Coinhive text was not removed from the HTML")
+		t.Error("Coinhive external script include was not removed from the HTML")
+	}
+	if strings.Contains(cleanHTML, "new CoinHive.Anonymous") {
+		t.Error("Coinhive inline script was not removed from the HTML")
 	}
 }
