@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
@@ -19,20 +18,26 @@ func main() {
 	}
 	fileContents, _ := ioutil.ReadAll(file)
 	fileContentsString := string(fileContents)
-	cleanedHTML := removeScriptFromHTML(fileContentsString)
-	writeStringToFile(targetFile, cleanedHTML)
+	cleanedHTML, err := removeScriptFromHTML(fileContentsString)
+	if err != nil {
+		log.Fatalf("Failed removing script from HTML. Error: %v", err)
+	}
+	err = writeStringToFile(targetFile, cleanedHTML)
+	if err != nil {
+		log.Fatalf("Failed writing cleaned result back to file. Error: %v", err)
+	}
 }
 
-func removeScriptFromHTML(s string) string {
+func removeScriptFromHTML(s string) (string, error) {
 	r := strings.NewReader(s)
 	doc, err := html.ParseWithOptions(r)
 	if err != nil {
-		fmt.Errorf("Failed parsing HTML: %q", err)
+		return "", err
 	}
 	removeScriptFromNodes(doc)
 	var resultBuffer bytes.Buffer
 	html.Render(&resultBuffer, doc)
-	return resultBuffer.String()
+	return resultBuffer.String(), nil
 }
 
 func removeScriptFromNodes(n *html.Node) {
@@ -50,16 +55,15 @@ func removeScriptFromNodes(n *html.Node) {
 	}
 }
 
-func writeStringToFile(fileName string, s string) {
+func writeStringToFile(fileName string, s string) error {
 	f, err := os.Create(fileName)
 	defer f.Close()
 	if err != nil {
-		fmt.Println(err)
-		return
+		return err
 	}
 	_, err = f.WriteString(s)
 	if err != nil {
-		fmt.Println(err)
-		return
+		return err
 	}
+	return nil
 }

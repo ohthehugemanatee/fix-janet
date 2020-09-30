@@ -14,7 +14,7 @@ func TestFindScript(t *testing.T) {
 		log.Fatalf("Could not read dirty HTML file. Error: %q", err)
 	}
 	dirtyHTMLString := string(dirtyHTML)
-	cleanHTML := removeScriptFromHTML(dirtyHTMLString)
+	cleanHTML, _ := removeScriptFromHTML(dirtyHTMLString)
 	if strings.Contains(cleanHTML, "coinhive") {
 		t.Error("Coinhive external script include was not removed from the HTML")
 	}
