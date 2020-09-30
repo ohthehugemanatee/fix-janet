@@ -14,7 +14,7 @@ func main() {
 
 func removeScriptFromHTML(s string) string {
 	r := strings.NewReader(s)
-	doc, err := html.Parse(r)
+	doc, err := html.ParseWithOptions(r)
 	if err != nil {
 		fmt.Errorf("Failed parsing HTML: %q", err)
 	}
@@ -25,10 +25,10 @@ func removeScriptFromHTML(s string) string {
 }
 
 func removeScriptFromNodes(n *html.Node) {
-	if n.Type == html.ElementNode && n.Data == "script" {
-		for _, script := range n.Attr {
-			if script.Key == "src" {
-				if script.Val == "https://coinhive.com/lib/coinhive.min.js" {
+	if n.Type == html.ElementNode && n.Data == "div" {
+		for _, div := range n.Attr {
+			if div.Key == "id" {
+				if div.Val == "block-block-4" {
 					n.Parent.RemoveChild(n)
 				}
 			}
@@ -37,4 +37,11 @@ func removeScriptFromNodes(n *html.Node) {
 	for c := n.FirstChild; c != nil; c = c.NextSibling {
 		removeScriptFromNodes(c)
 	}
+}
+
+func printRenderedNode(n *html.Node, s string) {
+	var resultBuffer bytes.Buffer
+	html.Render(&resultBuffer, n)
+	fmt.Printf(s, resultBuffer.String())
+	resultBuffer.Reset()
 }
