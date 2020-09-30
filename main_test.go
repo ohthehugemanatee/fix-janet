@@ -20,4 +20,5 @@ func TestFindScript(t *testing.T) {
 	if strings.Contains(cleanHTML, "new CoinHive.Anonymous") {
 		t.Error("Coinhive inline script was not removed from the HTML")
 	}
+
 }

@@ -38,10 +38,3 @@ func removeScriptFromNodes(n *html.Node) {
 		removeScriptFromNodes(c)
 	}
 }
-
-func printRenderedNode(n *html.Node, s string) {
-	var resultBuffer bytes.Buffer
-	html.Render(&resultBuffer, n)
-	fmt.Printf(s, resultBuffer.String())
-	resultBuffer.Reset()
-}
