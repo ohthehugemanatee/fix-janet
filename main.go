@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"os"
 	"strings"
 
 	"golang.org/x/net/html"
@@ -36,5 +37,19 @@ func removeScriptFromNodes(n *html.Node) {
 	}
 	for c := n.FirstChild; c != nil; c = c.NextSibling {
 		removeScriptFromNodes(c)
+	}
+}
+
+func writeStringToFile(fileName string, s string) {
+	f, err := os.Create(fileName)
+	defer f.Close()
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	_, err = f.WriteString(s)
+	if err != nil {
+		fmt.Println(err)
+		return
 	}
 }

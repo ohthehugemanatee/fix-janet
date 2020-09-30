@@ -3,6 +3,7 @@ package main
 import (
 	"io/ioutil"
 	"log"
+	"os"
 	"strings"
 	"testing"
 )
@@ -21,4 +22,20 @@ func TestFindScript(t *testing.T) {
 		t.Error("Coinhive inline script was not removed from the HTML")
 	}
 
+}
+
+func TestWriteFile(t *testing.T) {
+	fileName := "testFile.tmp"
+	fileContents := "You came in that thing? You're braver than I thought."
+	writeStringToFile(fileName, fileContents)
+	defer os.Remove(fileName)
+	file, err := os.Open(fileName)
+	if err != nil {
+		t.Errorf("Failed opening created file. Error: %v", err)
+	}
+	realContents, _ := ioutil.ReadAll(file)
+	realContentsString := string(realContents)
+	if fileContents != realContentsString {
+		t.Errorf("Contents of the file are incorrect. Got %v", realContentsString)
+	}
 }
